@@ -88,15 +88,20 @@ public class DBProviderImpl implements Provider {
     }
 
     public List<Box> getAllBoxes() {
-        return getList(Box.class, "SELECT * FROM boxes");
+        return getList(Box.class, "SELECT boxes.*, models.model_name " +
+                "FROM boxes join models on boxes.id_model = models.id_model");
     }
 
     public List<Box> getFreeBoxes() {
-        return getList(Box.class, "SELECT * FROM boxes WHERE box_number NOT IN (SELECT box_number FROM cars)");
+        return getList(Box.class, "SELECT boxes.*, models.model_name " +
+                "FROM boxes join models on boxes.id_model = models.id_model " +
+                "WHERE box_number NOT IN (SELECT box_number FROM cars)");
     }
 
     public Box getBoxById(String boxId) {
-        return getList(Box.class, String.format("SELECT * FROM boxes WHERE box_number = %s", boxId)).get(0);
+        return getList(Box.class, String.format("SELECT boxes.*, models.model_name" +
+                "FROM boxes join models on boxes.id_model = models.id_model " +
+                "WHERE box_number = %s", boxId)).get(0);
     }
 
     public void addBox(Box box) {

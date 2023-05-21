@@ -7,6 +7,15 @@ public class Box extends DBObject {
     Integer box_number;
     Integer id_model;
     Integer daily_cost;
+    String model_name;
+
+    public String getModel_name() {
+        return model_name;
+    }
+
+    public void setModel_name(String model_name) {
+        this.model_name = model_name;
+    }
 
     public Integer getBox_number() {
         return box_number;
@@ -72,6 +81,7 @@ public class Box extends DBObject {
             this.box_number = resultSet.getInt("box_number");
             this.id_model = resultSet.getInt("id_model");
             this.daily_cost = resultSet.getInt("daily_cost");
+            this.model_name = resultSet.getString("model_name");
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
