@@ -1,4 +1,6 @@
 import DB.*;
+import exceptions.MyException;
+import org.jboss.resteasy.spi.BadRequestException;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -23,7 +25,7 @@ public class DBProviderImpl implements Provider {
             }
             return result;
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            throw new MyException("Непредвиденная ошибка:\n" + e);
         }
     }
 
@@ -99,12 +101,14 @@ public class DBProviderImpl implements Provider {
     }
 
     public Box getBoxById(String boxId) {
-        return getList(Box.class, String.format("SELECT boxes.*, models.model_name" +
+        return getList(Box.class, String.format("SELECT boxes.*, models.model_name " +
                 "FROM boxes join models on boxes.id_model = models.id_model " +
                 "WHERE box_number = %s", boxId)).get(0);
     }
 
     public void addBox(Box box) {
+        if(!getAllBoxes().isEmpty())
+            throw new MyException("Бокс уже существует");
         addObject(box);
     }
 
