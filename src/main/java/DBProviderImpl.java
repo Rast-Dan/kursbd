@@ -57,10 +57,18 @@ public class DBProviderImpl implements Provider {
         return renters.get(0);
     }
 
-    public void addRenter(Renter renter) {
-        if(!getList(Renter.class, String.format("SELECT * FROM renters WHERE id_renter = %s", renter.getId_renter())).isEmpty())
+    public Renter addRenter(Renter renter) {
+        String query = "SELECT * FROM renters WHERE id_renter = %s";
+        if(renter.getId_renter() == null) {
+            Integer ident = 0;
+            while(!getList(Renter.class, String.format(query, ident)).isEmpty())
+                ident = (int)(Math.random() * Integer.MAX_VALUE);
+            renter.setId_renter(ident);
+        }
+        if(!getList(Renter.class, String.format(query, renter.getId_renter())).isEmpty())
             throw new MyException("Арендатор с таким идентификатором уже существует");
         addObject(renter);
+        return renter;
     }
 
     public Renter getRenterByBox(String boxId) {
@@ -90,10 +98,18 @@ public class DBProviderImpl implements Provider {
         return models.get(0);
     }
 
-    public void addModel(Model model) {
-        if(!getList(Model.class, String.format("SELECT * FROM models WHERE id_model = %s", model.getId_model())).isEmpty())
+    public Model addModel(Model model) {
+        String query = "SELECT * FROM models WHERE id_model = %s";
+        if(model.getId_model() == null) {
+            Integer ident = 0;
+            while(!getList(Model.class, String.format(query, ident)).isEmpty())
+                ident = (int)(Math.random() * Integer.MAX_VALUE);
+            model.setId_model(ident);
+        }
+        if(!getList(Model.class, String.format(query, model.getId_model())).isEmpty())
             throw new MyException("Модель с таким идентификатором уже существует");
         addObject(model);
+        return model;
     }
 
     public Model getModelByBox(String boxId) {
@@ -125,10 +141,18 @@ public class DBProviderImpl implements Provider {
         return boxes.get(0);
     }
 
-    public void addBox(Box box) {
-        if(!getList(Box.class, String.format("SELECT * FROM boxes WHERE box_number = %s", box.getBox_number())).isEmpty())
+    public Box addBox(Box box) {
+        String query = "SELECT * FROM boxes WHERE box_number = %s";
+        if(box.getBox_number() == null) {
+            Integer ident = 0;
+            while(!getList(Box.class, String.format(query, ident)).isEmpty())
+                ident = (int)(Math.random() * Integer.MAX_VALUE);
+            box.setBox_number(ident);
+        }
+        if(!getList(Box.class, String.format(query, box.getBox_number())).isEmpty())
             throw new MyException("Бокс с таким идентификатором уже существует");
         addObject(box);
+        return box;
     }
 
     public void deleteBoxById(String boxId) {
@@ -139,10 +163,18 @@ public class DBProviderImpl implements Provider {
         execute(String.format("UPDATE boxes SET daily_cost = ROUND(daily_cost * %s)", costUp.getCoef()));
     }
 
-    public void addCar(Car car) {
-        if(!getList(Car.class, String.format("SELECT * FROM cars WHERE car_number = %s", car.getCar_number())).isEmpty())
+    public Car addCar(Car car) {
+        String query = "SELECT * FROM cars WHERE car_number = %s";
+        if(car.getCar_number() == null) {
+            Integer ident = 0;
+            while(!getList(Car.class, String.format(query, ident)).isEmpty())
+                ident = (int)(Math.random() * Integer.MAX_VALUE);
+            car.setCar_number(ident);
+        }
+        if(!getList(Car.class, String.format(query, car.getCar_number())).isEmpty())
             throw new MyException("Машина с таким идентификатором уже существует");
         addObject(car);
+        return car;
     }
 
     public void deleteCarById(String carId) {

@@ -27,8 +27,9 @@ public class Api {
     @POST
     @Path("/renters/add")
     @Consumes({MediaType.APPLICATION_JSON})
-    public void addRenter(Renter renter) {
-        provider.addRenter(renter);
+    @Produces({MediaType.APPLICATION_JSON})
+    public Renter addRenter(Renter renter) {
+        return provider.addRenter(renter);
     }
 
     @GET
@@ -62,8 +63,9 @@ public class Api {
     @POST
     @Path("/models/add")
     @Consumes({MediaType.APPLICATION_JSON})
-    public void addModel(Model model) {
-        provider.addModel(model);
+    @Produces({MediaType.APPLICATION_JSON})
+    public Model addModel(Model model) {
+        return provider.addModel(model);
     }
 
     @GET
@@ -97,8 +99,9 @@ public class Api {
     @POST
     @Path("/boxes/add")
     @Consumes({MediaType.APPLICATION_JSON})
-    public void addBox(Box box) {
-        provider.addBox(box);
+    @Produces({MediaType.APPLICATION_JSON})
+    public Box addBox(Box box) {
+        return provider.addBox(box);
     }
 
     @DELETE
@@ -117,8 +120,9 @@ public class Api {
     @POST
     @Path("/cars/add")
     @Consumes({MediaType.APPLICATION_JSON})
-    public void addCar(Car car) {
-        provider.addCar(car);
+    @Produces({MediaType.APPLICATION_JSON})
+    public Car addCar(Car car) {
+        return provider.addCar(car);
     }
 
     @DELETE

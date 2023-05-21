@@ -7,7 +7,7 @@ public interface Provider {
 
     Renter getRenterById(String renterId);
 
-    void addRenter(Renter renter);
+    Renter addRenter(Renter renter);
 
     Renter getRenterByBox(String boxId);
 
@@ -17,7 +17,7 @@ public interface Provider {
 
     Model getModelById(String modelId);
 
-    void addModel(Model model);
+    Model addModel(Model model);
 
     Model getModelByBox(String boxId);
 
@@ -27,13 +27,13 @@ public interface Provider {
 
     Box getBoxById(String boxId);
 
-    void addBox(Box box);
+    Box addBox(Box box);
 
     void deleteBoxById(String boxId);
 
     void changeCost(CostUp costUp);
 
-    void addCar(Car car);
+    Car addCar(Car car);
 
     void deleteCarById(String carId);
 }
