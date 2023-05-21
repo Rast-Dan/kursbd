@@ -33,7 +33,7 @@ public class DBProviderImpl implements Provider {
         try {
             execute(value.insertString());
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            throw new MyException("Непредвиденная ошибка:\n" + e);
         }
     }
 
@@ -42,7 +42,7 @@ public class DBProviderImpl implements Provider {
             Statement statement = getStatement();
             statement.execute(query);
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            throw new MyException("Непредвиденная ошибка:\n" + e);
         }
     }
 
@@ -51,17 +51,25 @@ public class DBProviderImpl implements Provider {
     }
 
     public Renter getRenterById(String renterId) {
-        return getList(Renter.class, String.format("SELECT * FROM renters WHERE id_renter = %s", renterId)).get(0);
+        List<Renter> renters = getList(Renter.class, String.format("SELECT * FROM renters WHERE id_renter = %s", renterId));
+        if(renters.isEmpty())
+            throw new MyException("Арендатора с таким идентификатором не существует");
+        return renters.get(0);
     }
 
     public void addRenter(Renter renter) {
+        if(!getList(Renter.class, String.format("SELECT * FROM renters WHERE id_renter = %s", renter.getId_renter())).isEmpty())
+            throw new MyException("Арендатор с таким идентификатором уже существует");
         addObject(renter);
     }
 
     public Renter getRenterByBox(String boxId) {
-        return getList(Renter.class, String.format("SELECT renters.* FROM " +
+        List<Renter> renters = getList(Renter.class, String.format("SELECT renters.* FROM " +
                 "renters JOIN cars ON renters.id_renter = cars.id_renter " +
-                "JOIN boxes ON cars.box_number = boxes.box_number WHERE boxes.box_number = %s", boxId)).get(0);
+                "JOIN boxes ON cars.box_number = boxes.box_number WHERE boxes.box_number = %s", boxId));
+        if(renters.isEmpty())
+            throw new MyException("Арендатора с таким боксом не существует");
+        return renters.get(0);
     }
 
     public List<Renter> getRentersByModel(String modelId) {
@@ -76,17 +84,25 @@ public class DBProviderImpl implements Provider {
     }
 
     public Model getModelById(String modelId) {
-        return getList(Model.class, String.format("SELECT * FROM models WHERE id_model = %s", modelId)).get(0);
+        List<Model> models = getList(Model.class, String.format("SELECT * FROM models WHERE id_model = %s", modelId));
+        if(models.isEmpty())
+            throw new MyException("Модели с таким идентификатором нет");
+        return models.get(0);
     }
 
     public void addModel(Model model) {
+        if(!getList(Model.class, String.format("SELECT * FROM models WHERE id_model = %s", model.getId_model())).isEmpty())
+            throw new MyException("Модель с таким идентификатором уже существует");
         addObject(model);
     }
 
     public Model getModelByBox(String boxId) {
-        return getList(Model.class, String.format("SELECT models.* FROM " +
+        List<Model> models = getList(Model.class, String.format("SELECT models.* FROM " +
                 "models JOIN boxes ON boxes.id_model = models.id_model " +
-                "WHERE box_number = %s", boxId)).get(0);
+                "WHERE box_number = %s", boxId));
+        if(models.isEmpty())
+            throw new MyException("Модель для данного бокса отсутствует");
+        return models.get(0);
     }
 
     public List<Box> getAllBoxes() {
@@ -101,14 +117,17 @@ public class DBProviderImpl implements Provider {
     }
 
     public Box getBoxById(String boxId) {
-        return getList(Box.class, String.format("SELECT boxes.*, models.model_name " +
+        List<Box> boxes = getList(Box.class, String.format("SELECT boxes.*, models.model_name " +
                 "FROM boxes join models on boxes.id_model = models.id_model " +
-                "WHERE box_number = %s", boxId)).get(0);
+                "WHERE box_number = %s", boxId));
+        if(boxes.isEmpty())
+            throw new MyException("Бокса с таким идентификатором не существует");
+        return boxes.get(0);
     }
 
     public void addBox(Box box) {
-        if(!getAllBoxes().isEmpty())
-            throw new MyException("Бокс уже существует");
+        if(!getList(Box.class, String.format("SELECT * FROM boxes WHERE box_number = %s", box.getBox_number())).isEmpty())
+            throw new MyException("Бокс с таким идентификатором уже существует");
         addObject(box);
     }
 
@@ -121,6 +140,8 @@ public class DBProviderImpl implements Provider {
     }
 
     public void addCar(Car car) {
+        if(!getList(Car.class, String.format("SELECT * FROM cars WHERE car_number = %s", car.getCar_number())).isEmpty())
+            throw new MyException("Машина с таким идентификатором уже существует");
         addObject(car);
     }
 
@@ -136,7 +157,7 @@ public class DBProviderImpl implements Provider {
             statement.execute(Box.getCreateString());
             statement.execute(Car.getCreateString());
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new MyException(e.getMessage());
         }
 
     }

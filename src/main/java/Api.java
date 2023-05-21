@@ -1,4 +1,5 @@
 import DB.*;
+import exceptions.MyException;
 import org.jboss.resteasy.annotations.jaxrs.PathParam;
 import org.jboss.resteasy.annotations.jaxrs.QueryParam;
 
@@ -7,8 +8,6 @@ import javax.ws.rs.core.MediaType;
 import java.util.List;
 @Path("")
 public class Api {
-
-
     private Provider provider = new DBProviderImpl();
 
     @GET

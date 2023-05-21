@@ -1,6 +1,7 @@
 package DB;
 
 import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 
 public class Box extends DBObject {
@@ -76,12 +77,23 @@ public class Box extends DBObject {
                 getBox_number(), getId_model(), getDaily_cost());
     }
 
+    public static boolean hasColumn(ResultSet rs, String columnName) throws SQLException {
+        ResultSetMetaData rsmd = rs.getMetaData();
+        int columns = rsmd.getColumnCount();
+        for (int x = 1; x <= columns; x++) {
+            if (columnName.equals(rsmd.getColumnName(x))) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public void fillFromDB(ResultSet resultSet) {
         try {
             this.box_number = resultSet.getInt("box_number");
             this.id_model = resultSet.getInt("id_model");
             this.daily_cost = resultSet.getInt("daily_cost");
-            this.model_name = resultSet.getString("model_name");
+            this.model_name = hasColumn(resultSet, "model_name") ? resultSet.getString("model_name") : null;
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }

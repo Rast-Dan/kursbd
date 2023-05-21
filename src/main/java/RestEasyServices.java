@@ -1,3 +1,5 @@
+import exceptions.MyExceptionMapper;
+
 import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.core.Application;
 import java.util.HashSet;
@@ -14,5 +16,13 @@ public class RestEasyServices extends Application {
     @Override
     public Set<Object> getSingletons() {
         return singletons;
+    }
+
+    @Override
+    public Set<Class<?>> getClasses() {
+        Set<Class<?>> classes = new HashSet<>();
+        classes.add(MyExceptionMapper.class);
+        return classes;
+
     }
 }
