@@ -77,15 +77,11 @@ public class Box extends DBObject {
                 getBox_number(), getId_model(), getDaily_cost());
     }
 
-    public static boolean hasColumn(ResultSet rs, String columnName) throws SQLException {
-        ResultSetMetaData rsmd = rs.getMetaData();
-        int columns = rsmd.getColumnCount();
-        for (int x = 1; x <= columns; x++) {
-            if (columnName.equals(rsmd.getColumnName(x))) {
-                return true;
-            }
-        }
-        return false;
+    public String updateString() {
+        return String.format("UPDATE boxes " +
+                        "SET id_model = %d, daily_cost = %d " +
+                        "WHERE box_number = %d",
+                getId_model(), getDaily_cost(), getBox_number());
     }
 
     public void fillFromDB(ResultSet resultSet) {

@@ -90,6 +90,13 @@ public class Renter extends DBObject {
                 "VALUES (%d, '%s', '%s', '%s', %d)",
                 getId_renter(), getFull_name(), getPhone(), getAddress(), getReceipt_number());
     }
+
+    public String updateString() {
+        return String.format("UPDATE renters " +
+                        "SET full_name = '%s', phone = '%s', address = '%s', receipt_number = %d " +
+                        "WHERE id_renter = %d",
+                getFull_name(), getPhone(), getAddress(), getReceipt_number(), getId_renter());
+    }
     public void fillFromDB(ResultSet resultSet) {
         try {
             this.id_renter = resultSet.getInt("id_renter");

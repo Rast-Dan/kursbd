@@ -24,6 +24,7 @@ public interface Provider {
     List<Box> getAllBoxes();
 
     List<Box> getFreeBoxes();
+    List<Box> getFreeBoxesWithModel(String modelId);
 
     Box getBoxById(String boxId);
 
@@ -35,5 +36,6 @@ public interface Provider {
 
     Car addCar(Car car);
 
+    List<Car> getAllCars();
     void deleteCarById(String carId);
 }

@@ -99,6 +99,13 @@ public class Api {
     }
 
     @GET
+    @Path("/boxes/freeWithModel/{modelId}")
+    @Produces({MediaType.APPLICATION_JSON})
+    public List<Box> getFreeBoxesWithModel(@PathParam("modelId") String modelId) {
+        return provider.getFreeBoxesWithModel(modelId);
+    }
+
+    @GET
     @Path("/boxes/{boxId}")
     @Produces({MediaType.APPLICATION_JSON})
     public Box getBoxById(@PathParam("boxId") String boxId) {
@@ -132,6 +139,13 @@ public class Api {
     @Produces({MediaType.APPLICATION_JSON})
     public Car addCar(Car car) {
         return provider.addCar(car);
+    }
+
+    @GET
+    @Path("/cars/all")
+    @Produces({MediaType.APPLICATION_JSON})
+    public List<Car> allCars() {
+        return provider.getAllCars();
     }
 
     @DELETE

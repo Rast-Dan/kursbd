@@ -51,6 +51,12 @@ public class Model extends DBObject {
         return String.format("INSERT INTO models (id_model, model_name) VALUES (%d, '%s')", getId_model(), getName());
     }
 
+    public String updateString() {
+        return String.format("UPDATE models " +
+                        "SET model_name = '%s' " +
+                        "WHERE id_model = %d",
+                getName(), getId_model());
+    }
 
     public void fillFromDB(ResultSet resultSet) {
         try {

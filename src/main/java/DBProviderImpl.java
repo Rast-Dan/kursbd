@@ -37,6 +37,15 @@ public class DBProviderImpl implements Provider {
         }
     }
 
+    private <Type extends DBObject> void updateObject(Type value) {
+        try {
+            execute(value.updateString());
+        } catch (Exception e) {
+            throw new MyException("Непредвиденная ошибка:\n" + e);
+        }
+    }
+
+
     private void execute(String query) {
         try {
             Statement statement = getStatement();
@@ -66,8 +75,9 @@ public class DBProviderImpl implements Provider {
             renter.setId_renter(ident);
         }
         if(!getList(Renter.class, String.format(query, renter.getId_renter())).isEmpty())
-            throw new MyException("Арендатор с таким идентификатором уже существует");
-        addObject(renter);
+            updateObject(renter);
+        else
+            addObject(renter);
         return renter;
     }
 
@@ -107,8 +117,9 @@ public class DBProviderImpl implements Provider {
             model.setId_model(ident);
         }
         if(!getList(Model.class, String.format(query, model.getId_model())).isEmpty())
-            throw new MyException("Модель с таким идентификатором уже существует");
-        addObject(model);
+            updateObject(model);
+        else
+            addObject(model);
         return model;
     }
 
@@ -132,6 +143,13 @@ public class DBProviderImpl implements Provider {
                 "WHERE box_number NOT IN (SELECT box_number FROM cars)");
     }
 
+    public List<Box> getFreeBoxesWithModel(String modelId) {
+        return getList(Box.class, String.format("SELECT DISTINCT boxes.*, models.model_name " +
+                "FROM boxes join models on boxes.id_model = models.id_model " +
+                "WHERE boxes.id_model = %s AND box_number NOT IN (SELECT box_number FROM cars)", modelId));
+    }
+
+
     public Box getBoxById(String boxId) {
         List<Box> boxes = getList(Box.class, String.format("SELECT DISTINCT boxes.*, models.model_name " +
                 "FROM boxes join models on boxes.id_model = models.id_model " +
@@ -150,8 +168,9 @@ public class DBProviderImpl implements Provider {
             box.setBox_number(ident);
         }
         if(!getList(Box.class, String.format(query, box.getBox_number())).isEmpty())
-            throw new MyException("Бокс с таким идентификатором уже существует");
-        addObject(box);
+            updateObject(box);
+        else
+            addObject(box);
         return box;
     }
 
@@ -172,9 +191,15 @@ public class DBProviderImpl implements Provider {
             car.setCar_number(ident);
         }
         if(!getList(Car.class, String.format(query, car.getCar_number())).isEmpty())
-            throw new MyException("Машина с таким идентификатором уже существует");
-        addObject(car);
+            updateObject(car);
+        else
+            addObject(car);
         return car;
+    }
+
+    public List<Car> getAllCars() {
+        return getList(Car.class, "SELECT DISTINCT cars.*, models.model_name, renters.full_name, renters.phone " +
+                "FROM cars join models on cars.id_model = models.id_model join renters on cars.id_renter = renters.id_renter");
     }
 
     public void deleteCarById(String carId) {
