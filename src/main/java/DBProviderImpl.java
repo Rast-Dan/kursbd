@@ -81,7 +81,7 @@ public class DBProviderImpl implements Provider {
     }
 
     public List<Renter> getRentersByModel(String modelId) {
-        return getList(Renter.class, String.format("SELECT renters.* FROM " +
+        return getList(Renter.class, String.format("SELECT DISTINCT renters.* FROM " +
                 "renters JOIN cars ON renters.id_renter = cars.id_renter " +
                 "JOIN boxes ON cars.box_number = boxes.box_number " +
                 "JOIN models ON boxes.id_model = models.id_model WHERE boxes.id_model = %s", modelId));
@@ -113,7 +113,7 @@ public class DBProviderImpl implements Provider {
     }
 
     public Model getModelByBox(String boxId) {
-        List<Model> models = getList(Model.class, String.format("SELECT models.* FROM " +
+        List<Model> models = getList(Model.class, String.format("SELECT DISTINCT models.* FROM " +
                 "models JOIN boxes ON boxes.id_model = models.id_model " +
                 "WHERE box_number = %s", boxId));
         if(models.isEmpty())
@@ -122,18 +122,18 @@ public class DBProviderImpl implements Provider {
     }
 
     public List<Box> getAllBoxes() {
-        return getList(Box.class, "SELECT boxes.*, models.model_name " +
+        return getList(Box.class, "SELECT DISTINCT boxes.*, models.model_name " +
                 "FROM boxes join models on boxes.id_model = models.id_model");
     }
 
     public List<Box> getFreeBoxes() {
-        return getList(Box.class, "SELECT boxes.*, models.model_name " +
+        return getList(Box.class, "SELECT DISTINCT boxes.*, models.model_name " +
                 "FROM boxes join models on boxes.id_model = models.id_model " +
                 "WHERE box_number NOT IN (SELECT box_number FROM cars)");
     }
 
     public Box getBoxById(String boxId) {
-        List<Box> boxes = getList(Box.class, String.format("SELECT boxes.*, models.model_name " +
+        List<Box> boxes = getList(Box.class, String.format("SELECT DISTINCT boxes.*, models.model_name " +
                 "FROM boxes join models on boxes.id_model = models.id_model " +
                 "WHERE box_number = %s", boxId));
         if(boxes.isEmpty())
