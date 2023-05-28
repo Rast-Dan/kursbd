@@ -1,6 +1,7 @@
 import DB.*;
 import exceptions.MyException;
 import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.xssf.usermodel.XSSFFont;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.jboss.resteasy.annotations.jaxrs.PathParam;
 import org.jboss.resteasy.annotations.jaxrs.QueryParam;
@@ -13,8 +14,13 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.util.ArrayList;
-import java.util.List;
+import java.time.Duration;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.Period;
+import java.time.format.DateTimeFormatter;
+import java.util.*;
+import java.text.*;
 @Path("")
 public class Api {
     private Provider provider = new DBProviderImpl();
@@ -39,6 +45,14 @@ public class Api {
     @Produces({MediaType.APPLICATION_JSON})
     public Renter addRenter(Renter renter) {
         return provider.addRenter(renter);
+    }
+
+    @POST
+    @Path("/renters/update")
+    @Consumes({MediaType.APPLICATION_JSON})
+    @Produces({MediaType.APPLICATION_JSON})
+    public Renter updateRenter(Renter renter) {
+        return provider.updateRenter(renter);
     }
 
     @GET
@@ -75,6 +89,14 @@ public class Api {
     @Produces({MediaType.APPLICATION_JSON})
     public Model addModel(Model model) {
         return provider.addModel(model);
+    }
+
+    @POST
+    @Path("/models/update")
+    @Consumes({MediaType.APPLICATION_JSON})
+    @Produces({MediaType.APPLICATION_JSON})
+    public Model updateModel(Model model) {
+        return provider.updateModel(model);
     }
 
     @GET
@@ -120,6 +142,14 @@ public class Api {
         return provider.addBox(box);
     }
 
+    @POST
+    @Path("/boxes/update")
+    @Consumes({MediaType.APPLICATION_JSON})
+    @Produces({MediaType.APPLICATION_JSON})
+    public Box updateBox(Box box) {
+        return provider.updateBox(box);
+    }
+
     @DELETE
     @Path("/boxes/delete/{boxId}")
     public void deleteBoxById(@PathParam("boxId") String boxId) {
@@ -139,6 +169,14 @@ public class Api {
     @Produces({MediaType.APPLICATION_JSON})
     public Car addCar(Car car) {
         return provider.addCar(car);
+    }
+
+    @POST
+    @Path("/cars/update")
+    @Consumes({MediaType.APPLICATION_JSON})
+    @Produces({MediaType.APPLICATION_JSON})
+    public Car updateCar(Car car) {
+        return provider.updateCar(car);
     }
 
     @GET
@@ -193,7 +231,113 @@ public class Api {
         return getXlsxFile(workbook);
     }
 
-    private Response getRentersXlsx(List<Renter> renters) {
+
+    @GET
+    @Path("/amount.xlsx")
+    @Produces(MediaType.APPLICATION_OCTET_STREAM)
+    public Response getAmount(@QueryParam("car_number") String carNumber) {
+        Car car = provider.getCarById(carNumber);
+        Renter renter = getRenterByBox(car.getBox_number().toString());
+        Box box = getBoxById(car.getBox_number().toString());
+
+        Workbook workbook = new XSSFWorkbook();
+        Sheet sheet = workbook.createSheet("Boxes");
+        sheet.setColumnWidth(0, 6000);
+        sheet.setColumnWidth(1, 6000);
+        sheet.setColumnWidth(2, 6000);
+        sheet.setColumnWidth(3, 6000);
+        sheet.setColumnWidth(4, 6000);
+        CellStyle headerStyle = workbook.createCellStyle();
+        headerStyle.setWrapText(true);
+        XSSFFont headerFont = ((XSSFWorkbook) workbook).createFont();
+        headerFont.setBold(true);
+        headerStyle.setFont(headerFont);
+        CellStyle style = workbook.createCellStyle();
+        style.setWrapText(true);
+        int pos = 0;
+        Row header = sheet.createRow(pos++);
+        Cell headerCell = header.createCell(0);
+        headerCell.setCellValue("Номер квитанции");
+        headerCell.setCellStyle(headerStyle);
+        headerCell = header.createCell(1);
+        headerCell.setCellValue(car.getReceipt_number());
+        headerCell.setCellStyle(headerStyle);
+
+        header = sheet.createRow(pos++);
+        headerCell = header.createCell(0);
+        headerCell.setCellValue("ФИО арендатора");
+        headerCell.setCellStyle(style);
+        headerCell = header.createCell(1);
+        headerCell.setCellValue(car.getRenter_full_name());
+        headerCell.setCellStyle(style);
+
+        header = sheet.createRow(pos++);
+        headerCell = header.createCell(0);
+        headerCell.setCellValue("Телефон");
+        headerCell.setCellStyle(style);
+        headerCell = header.createCell(1);
+        headerCell.setCellValue(car.getRenter_phone());
+        headerCell.setCellStyle(style);
+
+        header = sheet.createRow(pos++);
+        headerCell = header.createCell(0);
+        headerCell.setCellValue("Адрес");
+        headerCell.setCellStyle(style);
+        headerCell = header.createCell(1);
+        headerCell.setCellValue(renter.getAddress());
+        headerCell.setCellStyle(style);
+
+        header = sheet.createRow(pos++);
+        headerCell = header.createCell(0);
+        headerCell.setCellValue("Номер машины");
+        headerCell.setCellStyle(style);
+        headerCell = header.createCell(1);
+        headerCell.setCellValue(car.getAutomobile_number());
+        headerCell.setCellStyle(style);
+
+        sheet.createRow(pos++);
+        sheet.createRow(pos++);
+
+        header = sheet.createRow(pos++);
+        headerCell = header.createCell(0);
+        headerCell.setCellValue("Номер бокса");
+        headerCell.setCellStyle(style);
+        headerCell = header.createCell(1);
+        headerCell.setCellValue("Посуточная стоимость \nаренды (руб/сутки)");
+        headerCell.setCellStyle(style);
+        headerCell = header.createCell(2);
+        headerCell.setCellValue("Дата начала аренды");
+        headerCell.setCellStyle(style);
+        headerCell = header.createCell(3);
+        headerCell.setCellValue("Количество (дней)");
+        headerCell.setCellStyle(style);
+        headerCell = header.createCell(4);
+        headerCell.setCellValue("Итого");
+        headerCell.setCellStyle(style);
+
+        header = sheet.createRow(pos++);
+        headerCell = header.createCell(0);
+        headerCell.setCellValue(box.getBox_number());
+        headerCell.setCellStyle(style);
+        headerCell = header.createCell(1);
+        headerCell.setCellValue(box.getDaily_cost());
+        headerCell.setCellStyle(style);
+        headerCell = header.createCell(2);
+        headerCell.setCellValue(car.getRental_start_date());
+        headerCell.setCellStyle(style);
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd.MM.yyyy");
+        LocalDate date = LocalDate.parse(car.getRental_start_date(), dtf);
+        long daysNumber = Period.between(date, LocalDate.now()).getDays();
+        headerCell = header.createCell(3);
+        headerCell.setCellValue(daysNumber);
+        headerCell.setCellStyle(style);
+        headerCell = header.createCell(4);
+        headerCell.setCellValue(daysNumber * box.getDaily_cost());
+        headerCell.setCellStyle(style);
+        return getXlsxFile(workbook);
+    }
+
+    private Response getRentersXlsx(List<Renter> renters, Car car) {
         Workbook workbook = new XSSFWorkbook();
         Sheet sheet = workbook.createSheet("Renter");
         sheet.setColumnWidth(0, 6000);
@@ -206,37 +350,41 @@ public class Api {
         int pos = 0;
         Row header = sheet.createRow(pos++);
         Cell headerCell = header.createCell(0);
-        headerCell.setCellValue("Номер арендатора");
-        headerCell.setCellStyle(style);
-        headerCell = header.createCell(1);
         headerCell.setCellValue("Полное имя");
         headerCell.setCellStyle(style);
-        headerCell = header.createCell(2);
+        headerCell = header.createCell(1);
         headerCell.setCellValue("Телефон");
         headerCell.setCellStyle(style);
-        headerCell = header.createCell(3);
+        headerCell = header.createCell(2);
         headerCell.setCellValue("Адрес");
         headerCell.setCellStyle(style);
-        headerCell = header.createCell(4);
-        headerCell.setCellValue("Номер квитанции");
-        headerCell.setCellStyle(style);
+        if (car != null) {
+            headerCell = header.createCell(3);
+            headerCell.setCellValue("Номер квитанции");
+            headerCell.setCellStyle(style);
+            headerCell = header.createCell(4);
+            headerCell.setCellValue("Номер машины");
+            headerCell.setCellStyle(style);
+        }
         for(Renter renter:renters) {
             Row line = sheet.createRow(pos++);
             Cell cell = line.createCell(0);
-            cell.setCellValue(renter.getId_renter());
-            cell.setCellStyle(style);
-            cell = line.createCell(1);
             cell.setCellValue(renter.getFull_name());
             cell.setCellStyle(style);
-            cell = line.createCell(2);
+            cell = line.createCell(1);
             cell.setCellValue(renter.getPhone());
             cell.setCellStyle(style);
-            cell = line.createCell(3);
+            cell = line.createCell(2);
             cell.setCellValue(renter.getAddress());
             cell.setCellStyle(style);
-            cell = line.createCell(4);
-            cell.setCellValue(renter.getReceipt_number());
-            cell.setCellStyle(style);
+            if (car != null) {
+                cell = line.createCell(3);
+                cell.setCellValue(car.getReceipt_number());
+                cell.setCellStyle(style);
+                cell = line.createCell(4);
+                cell.setCellValue(car.getAutomobile_number());
+                cell.setCellStyle(style);
+            }
         }
         return getXlsxFile(workbook);
     }
@@ -250,8 +398,9 @@ public class Api {
         }
         Renter renter = getRenterByBox(boxId);
         List<Renter> renters = new ArrayList<>();
+        Car car = provider.getCarByBox(boxId);
         renters.add(renter);
-        return getRentersXlsx(renters);
+        return getRentersXlsx(renters, car);
     }
 
     @GET
@@ -259,7 +408,7 @@ public class Api {
     @Produces(MediaType.APPLICATION_OCTET_STREAM)
     public Response getAllClientsXlsx() {
         List<Renter> renters = getAllRenters();
-        return getRentersXlsx(renters);
+        return getRentersXlsx(renters, null);
     }
 
     @GET
@@ -270,9 +419,24 @@ public class Api {
             throw new MyException("Не задан box_number");
         }
         List<Renter> renters = getRentersByModel(modelId);
-        return getRentersXlsx(renters);
+        return getRentersXlsx(renters, null);
     }
 
+    @GET
+    @Path("/models/report")
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<ModelReport> getModelReport() {
+        Map<Integer, Integer> boxesWithModel = new HashMap<>();
+        provider.getAllBoxes().forEach(box->boxesWithModel.put(box.getId_model(), boxesWithModel.getOrDefault(box.getId_model(), 0) + 1));
+        Map<Integer, Integer> carsWithModel = new HashMap<>();
+        provider.getAllCars().forEach(car->carsWithModel.put(car.getId_model(), carsWithModel.getOrDefault(car.getId_model(), 0) + 1));
+        List<ModelReport> result = new ArrayList<>();
+        provider.getAllModels().forEach(model->
+                result.add(new ModelReport(model.getName(),
+                        boxesWithModel.getOrDefault(model.getId_model(), 0),
+                        carsWithModel.getOrDefault(model.getId_model(), 0))));
+        return result;
+    }
 
     private Response getXlsxFile(Workbook workbook) {
         try {

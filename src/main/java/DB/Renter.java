@@ -10,8 +10,6 @@ public class Renter extends DBObject {
     private String full_name;
     private String phone;
     private String address;
-    private Integer receipt_number;
-
     public Integer getId_renter() {
         return id_renter;
     }
@@ -44,14 +42,6 @@ public class Renter extends DBObject {
         this.address = address;
     }
 
-    public Integer getReceipt_number() {
-        return receipt_number;
-    }
-
-    public void setReceipt_number(Integer receipt_number) {
-        this.receipt_number = receipt_number;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -60,9 +50,7 @@ public class Renter extends DBObject {
         if (!getId_renter().equals(renter.getId_renter())) return false;
         if (!getFull_name().equals(renter.getFull_name())) return false;
         if (getPhone() != null ? !getPhone().equals(renter.getPhone()) : renter.getPhone() != null) return false;
-        if (getAddress() != null ? !getAddress().equals(renter.getAddress()) : renter.getAddress() != null)
-            return false;
-        return getReceipt_number().equals(renter.getReceipt_number());
+        return getAddress() != null ? getAddress().equals(renter.getAddress()) : renter.getAddress() == null;
     }
 
     @Override
@@ -71,7 +59,6 @@ public class Renter extends DBObject {
         result = 31 * result + getFull_name().hashCode();
         result = 31 * result + (getPhone() != null ? getPhone().hashCode() : 0);
         result = 31 * result + (getAddress() != null ? getAddress().hashCode() : 0);
-        result = 31 * result + getReceipt_number().hashCode();
         return result;
     }
 
@@ -81,21 +68,20 @@ public class Renter extends DBObject {
                 "full_name TEXT NOT NULL, " +
                 "phone TEXT NOT NULL, " +
                 "address TEXT NOT NULL, " +
-                "receipt_number INT NOT NULL, " +
                 "PRIMARY KEY(id_renter)" +
                 ")";
     }
     public String insertString() {
-        return String.format("INSERT INTO renters (id_renter, full_name, phone, address, receipt_number) " +
-                "VALUES (%d, '%s', '%s', '%s', %d)",
-                getId_renter(), getFull_name(), getPhone(), getAddress(), getReceipt_number());
+        return String.format("INSERT INTO renters (id_renter, full_name, phone, address) " +
+                "VALUES (%d, '%s', '%s', '%s')",
+                getId_renter(), getFull_name(), getPhone(), getAddress());
     }
 
     public String updateString() {
         return String.format("UPDATE renters " +
-                        "SET full_name = '%s', phone = '%s', address = '%s', receipt_number = %d " +
+                        "SET full_name = '%s', phone = '%s', address = '%s' " +
                         "WHERE id_renter = %d",
-                getFull_name(), getPhone(), getAddress(), getReceipt_number(), getId_renter());
+                getFull_name(), getPhone(), getAddress(), getId_renter());
     }
     public void fillFromDB(ResultSet resultSet) {
         try {
@@ -103,7 +89,6 @@ public class Renter extends DBObject {
             this.full_name = resultSet.getString("full_name");
             this.phone = resultSet.getString("phone");
             this.address = resultSet.getString("address");
-            this.receipt_number = resultSet.getInt("receipt_number");
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }

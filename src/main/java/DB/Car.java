@@ -13,6 +13,15 @@ public class Car extends DBObject {
     String model_name;
     String renter_full_name;
     String renter_phone;
+    Integer receipt_number;
+
+    public Integer getReceipt_number() {
+        return receipt_number;
+    }
+
+    public void setReceipt_number(Integer receipt_number) {
+        this.receipt_number = receipt_number;
+    }
 
     public String getModel_name() {
         return model_name;
@@ -116,6 +125,7 @@ public class Car extends DBObject {
                 "id_model INT NOT NULL, " +
                 "rental_start_date TEXT NOT NULL, " +
                 "automobile_number TEXT NOT NULL, " +
+                "receipt_number INT NOT NULL, " +
                 "PRIMARY KEY(car_number), " +
                 "CONSTRAINT fk_box " +
                 "FOREIGN KEY(box_number) " +
@@ -130,16 +140,16 @@ public class Car extends DBObject {
     }
 
     public String insertString() {
-        return String.format("INSERT INTO cars (car_number, box_number, id_renter, id_model, rental_start_date, automobile_number) " +
-                        "VALUES (%d, %d, %d, %d, '%s', '%s')",
-                getCar_number(), getBox_number(), getId_renter(), getId_model(), getRental_start_date(), getAutomobile_number());
+        return String.format("INSERT INTO cars (car_number, box_number, id_renter, id_model, rental_start_date, automobile_number, receipt_number) " +
+                        "VALUES (%d, %d, %d, %d, '%s', '%s', %d)",
+                getCar_number(), getBox_number(), getId_renter(), getId_model(), getRental_start_date(), getAutomobile_number(), getReceipt_number());
     }
 
     public String updateString() {
         return String.format("UPDATE cars " +
-                        "SET box_number = %d, id_renter = %d, id_model = %d, rental_start_date = '%s', automobile_number = '%s' " +
+                        "SET box_number = %d, id_renter = %d, id_model = %d, rental_start_date = '%s', automobile_number = '%s', receipt_number = %d " +
                         "WHERE car_number = %d",
-                getBox_number(), getId_renter(), getId_model(), getRental_start_date(), getAutomobile_number(), getCar_number());
+                getBox_number(), getId_renter(), getId_model(), getRental_start_date(), getAutomobile_number(), getReceipt_number(), getCar_number());
     }
 
     public void fillFromDB(ResultSet resultSet) {
@@ -153,6 +163,7 @@ public class Car extends DBObject {
             this.model_name = hasColumn(resultSet, "model_name") ? resultSet.getString("model_name") : null;
             this.renter_full_name = hasColumn(resultSet, "full_name") ? resultSet.getString("full_name") : null;
             this.renter_phone = hasColumn(resultSet, "phone") ? resultSet.getString("phone") : null;
+            this.receipt_number = resultSet.getInt("receipt_number");
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
