@@ -194,7 +194,7 @@ public class DBProviderImpl implements Provider {
     }
 
     public void changeCost(CostUp costUp) {
-        execute(String.format("UPDATE boxes SET daily_cost = ROUND(daily_cost * %s)", costUp.getCoef()));
+            execute(String.format("UPDATE boxes SET daily_cost = ROUND(daily_cost * %s)", costUp.getCoef()));
     }
 
     String selectCarsQuery = "SELECT * FROM cars WHERE car_number = %s";

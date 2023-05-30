@@ -29,6 +29,7 @@ public class Api {
     @Path("/renters/all")
     @Produces({MediaType.APPLICATION_JSON})
     public List<Renter> getAllRenters() {
+        System.out.println("/renters/all");
         return provider.getAllRenters();
     }
 
@@ -36,6 +37,7 @@ public class Api {
     @Path("/renters/{renterId}")
     @Produces({MediaType.APPLICATION_JSON})
     public Renter getRenterById(@PathParam("renterId") String renterId) {
+        System.out.println("/renters/{renterId}");
         return provider.getRenterById(renterId);
     }
 
@@ -44,6 +46,7 @@ public class Api {
     @Consumes({MediaType.APPLICATION_JSON})
     @Produces({MediaType.APPLICATION_JSON})
     public Renter addRenter(Renter renter) {
+        System.out.println("/renters/add");
         return provider.addRenter(renter);
     }
 
@@ -52,6 +55,7 @@ public class Api {
     @Consumes({MediaType.APPLICATION_JSON})
     @Produces({MediaType.APPLICATION_JSON})
     public Renter updateRenter(Renter renter) {
+        System.out.println("/renters/update");
         return provider.updateRenter(renter);
     }
 
@@ -59,6 +63,7 @@ public class Api {
     @Path("/renterInBox/{boxId}")
     @Produces({MediaType.APPLICATION_JSON})
     public Renter getRenterByBox(@PathParam("boxId") String boxId) {
+        System.out.println("/renterInBox/{boxId}");
         return provider.getRenterByBox(boxId);
     }
 
@@ -66,6 +71,7 @@ public class Api {
     @Path("/renterByModel/{modelId}")
     @Produces({MediaType.APPLICATION_JSON})
     public List<Renter> getRentersByModel(@PathParam("modelId") String modelId) {
+        System.out.println("/renterByModel/{modelId}");
         return provider.getRentersByModel(modelId);
     }
 
@@ -73,6 +79,7 @@ public class Api {
     @Path("/models/all")
     @Produces({MediaType.APPLICATION_JSON})
     public List<Model> getAllModels() {
+        System.out.println("/models/all");
         return provider.getAllModels();
     }
 
@@ -80,6 +87,7 @@ public class Api {
     @Path("/models/{modelId}")
     @Produces({MediaType.APPLICATION_JSON})
     public Model getModelById(@PathParam("modelId") String modelId) {
+        System.out.println("/models/{modelId}");
         return provider.getModelById(modelId);
     }
 
@@ -88,6 +96,7 @@ public class Api {
     @Consumes({MediaType.APPLICATION_JSON})
     @Produces({MediaType.APPLICATION_JSON})
     public Model addModel(Model model) {
+        System.out.println("/models/add");
         return provider.addModel(model);
     }
 
@@ -96,6 +105,7 @@ public class Api {
     @Consumes({MediaType.APPLICATION_JSON})
     @Produces({MediaType.APPLICATION_JSON})
     public Model updateModel(Model model) {
+        System.out.println("/models/update");
         return provider.updateModel(model);
     }
 
@@ -103,6 +113,7 @@ public class Api {
     @Path("/modelForBox/{boxId}")
     @Produces({MediaType.APPLICATION_JSON})
     public Model getModelByBox(@PathParam("boxId") String boxId) {
+        System.out.println("/modelForBox/{boxId}");
         return provider.getModelByBox(boxId);
     }
 
@@ -110,6 +121,7 @@ public class Api {
     @Path("/boxes/all")
     @Produces({MediaType.APPLICATION_JSON})
     public List<Box> getAllBoxes() {
+        System.out.println("/boxes/all");
         return provider.getAllBoxes();
     }
 
@@ -117,6 +129,7 @@ public class Api {
     @Path("/boxes/free")
     @Produces({MediaType.APPLICATION_JSON})
     public List<Box> getFreeBoxes() {
+        System.out.println("/boxes/free");
         return provider.getFreeBoxes();
     }
 
@@ -124,6 +137,7 @@ public class Api {
     @Path("/boxes/freeWithModel/{modelId}")
     @Produces({MediaType.APPLICATION_JSON})
     public List<Box> getFreeBoxesWithModel(@PathParam("modelId") String modelId) {
+        System.out.println("/boxes/freeWithModel/{modelId}");
         return provider.getFreeBoxesWithModel(modelId);
     }
 
@@ -131,6 +145,7 @@ public class Api {
     @Path("/boxes/{boxId}")
     @Produces({MediaType.APPLICATION_JSON})
     public Box getBoxById(@PathParam("boxId") String boxId) {
+        System.out.println("/boxes/{boxId}");
         return provider.getBoxById(boxId);
     }
 
@@ -139,6 +154,7 @@ public class Api {
     @Consumes({MediaType.APPLICATION_JSON})
     @Produces({MediaType.APPLICATION_JSON})
     public Box addBox(Box box) {
+        System.out.println("/boxes/add");
         return provider.addBox(box);
     }
 
@@ -147,12 +163,14 @@ public class Api {
     @Consumes({MediaType.APPLICATION_JSON})
     @Produces({MediaType.APPLICATION_JSON})
     public Box updateBox(Box box) {
+        System.out.println("/boxes/update");
         return provider.updateBox(box);
     }
 
     @DELETE
     @Path("/boxes/delete/{boxId}")
     public void deleteBoxById(@PathParam("boxId") String boxId) {
+        System.out.println("/boxes/delete/{boxId}");
         provider.deleteBoxById(boxId);
     }
 
@@ -160,6 +178,7 @@ public class Api {
     @Path("/boxes/costUp")
     @Consumes({MediaType.APPLICATION_JSON})
     public void changeCost(CostUp costUp) {
+        System.out.println("/boxes/costUp");
         provider.changeCost(costUp);
     }
 
@@ -168,6 +187,7 @@ public class Api {
     @Consumes({MediaType.APPLICATION_JSON})
     @Produces({MediaType.APPLICATION_JSON})
     public Car addCar(Car car) {
+        System.out.println("/cars/add");
         return provider.addCar(car);
     }
 
@@ -176,6 +196,7 @@ public class Api {
     @Consumes({MediaType.APPLICATION_JSON})
     @Produces({MediaType.APPLICATION_JSON})
     public Car updateCar(Car car) {
+        System.out.println("/cars/update");
         return provider.updateCar(car);
     }
 
@@ -183,12 +204,14 @@ public class Api {
     @Path("/cars/all")
     @Produces({MediaType.APPLICATION_JSON})
     public List<Car> allCars() {
+        System.out.println("/cars/all");
         return provider.getAllCars();
     }
 
     @DELETE
     @Path("/cars/delete/{carId}")
     public void deleteCarById(@PathParam("carId") String carId) {
+        System.out.println("/cars/delete/{carId}");
         provider.deleteCarById(carId);
     }
 
@@ -196,6 +219,7 @@ public class Api {
     @Path("/free_boxes.xlsx")
     @Produces(MediaType.APPLICATION_OCTET_STREAM)
     public Response getFreeBoxesXlsx() {
+        System.out.println("/free_boxes.xlsx");
         List<Box> freeBoxes = getFreeBoxes();
 
         Workbook workbook = new XSSFWorkbook();
@@ -236,6 +260,7 @@ public class Api {
     @Path("/amount.xlsx")
     @Produces(MediaType.APPLICATION_OCTET_STREAM)
     public Response getAmount(@QueryParam("car_number") String carNumber) {
+        System.out.println("/amount.xlsx");
         Car car = provider.getCarById(carNumber);
         Renter renter = getRenterByBox(car.getBox_number().toString());
         Box box = getBoxById(car.getBox_number().toString());
@@ -393,6 +418,7 @@ public class Api {
     @Path("/client_in_box.xlsx")
     @Produces(MediaType.APPLICATION_OCTET_STREAM)
     public Response getClientXlsxByBoxId(@QueryParam("box_number") String boxId) throws MyException {
+        System.out.println("/client_in_box.xlsx");
         if(boxId == null) {
             throw new MyException("Не задан box_number");
         }
@@ -407,6 +433,7 @@ public class Api {
     @Path("/all_clients.xlsx")
     @Produces(MediaType.APPLICATION_OCTET_STREAM)
     public Response getAllClientsXlsx() {
+        System.out.println("/all_clients.xlsx");
         List<Renter> renters = getAllRenters();
         return getRentersXlsx(renters, null);
     }
@@ -415,6 +442,7 @@ public class Api {
     @Path("/client_with_model.xlsx")
     @Produces(MediaType.APPLICATION_OCTET_STREAM)
     public Response getClientXlsxByModelId(@QueryParam("id_model") String modelId) throws MyException {
+        System.out.println("/client_with_model.xlsx");
         if(modelId == null) {
             throw new MyException("Не задан box_number");
         }
@@ -426,6 +454,7 @@ public class Api {
     @Path("/models/report")
     @Produces(MediaType.APPLICATION_JSON)
     public List<ModelReport> getModelReport() {
+        System.out.println("/models/report");
         Map<Integer, Integer> boxesWithModel = new HashMap<>();
         provider.getAllBoxes().forEach(box->boxesWithModel.put(box.getId_model(), boxesWithModel.getOrDefault(box.getId_model(), 0) + 1));
         Map<Integer, Integer> carsWithModel = new HashMap<>();
